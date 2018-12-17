@@ -1,7 +1,6 @@
 import Hapi from 'hapi';
 import dotenv from 'dotenv';
 import routes from './routes';
-import { plugins } from './plugins';
 
 // init env
 dotenv.config();
@@ -12,24 +11,11 @@ const server = Hapi.server({
   port: process.env.PORT,
 });
 
-// validate jwt
-const validate = async (decoded) => {
-  if (decoded) return { isValid: true };
-  return false;
-};
+// Add routes
+routes(server);
 
 // Start the server
 const start = async () => {
-  await server.register(plugins);
-  server.auth.strategy('token', 'jwt', {
-    key: process.env.SECRET,
-    validate,
-    verifyOptions: { algorithms: ['HS256'] },
-  });
-
-  // Add routes
-  routes(server);
-
   try {
     await server.start();
   } catch (err) {
