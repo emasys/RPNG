@@ -1,44 +1,31 @@
-import Hapi from 'hapi';
-import dotenv from 'dotenv';
-import routes from './routes';
-import { plugins } from './plugins';
+import Glue from '@hapi/glue';
+import Log from 'fancy-log';
+import config from './config';
 
-// init env
-dotenv.config();
-
-// Create a server with a host and port
-const server = Hapi.server({
-  host: 'localhost',
-  port: process.env.PORT,
-});
-
-// validate jwt
-const validate = async (decoded) => {
-  if (decoded) return { isValid: true };
-  return false;
+const options = {
+  relativeTo: __dirname,
 };
 
-// Start the server
-const start = async () => {
-  await server.register(plugins);
-  server.auth.strategy('token', 'jwt', {
-    key: process.env.SECRET,
-    validate,
-    verifyOptions: { algorithms: ['HS256'] },
-  });
+const app = {};
 
-  // Add routes
-  routes(server);
-
+const startServer = async () => {
   try {
-    await server.start();
-  } catch (err) {
-    console.log(err);
+    const server = await Glue.compose(
+      config,
+      options,
+    );
+    app.server = server;
+    await app.server.start();
+    Log(`Server running at: ${server.info.uri}`);
+    Log(`docs running at ${server.info.uri}/documentation`);
+  } catch (error) {
+    /* istanbul ignore next */
+    Log.error(error);
+    /* istanbul ignore next */
     process.exit(1);
   }
-  console.log('Server running at:', server.info.uri);
 };
 
-start();
+startServer();
 
-export default server;
+export default app;
