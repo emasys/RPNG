@@ -7,7 +7,7 @@
     "dev": "nodemon --exec babel-node ./src/index.js",
     "start": "node ./dist/index.js",
     "build": "babel src --out-dir ./dist --source-maps",
-    "test": "NODE_ENV=test nyc mocha ./test/*.spec.js --require @babel/register ",
+    "test": "NODE_ENV=test nyc mocha ./test/*.spec.js --require @babel/register --exit && nyc report --reporter=text-lcov | coveralls",
     "debug": "node --inspect-brk ./dist/index.js"
   },
   "keywords": [
