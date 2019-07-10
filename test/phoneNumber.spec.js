@@ -49,7 +49,6 @@ describe('test suite for phone numbers generator', () => {
         url: '/v1/numbers?sort=DSC',
       });
       expect(statusCode).to.equal(400);
-      console.log(result);
       expect(result).to.include({
         message:
           'child "sort" fails because [You can only sort by Desc or Asc]',

@@ -13,6 +13,7 @@ export const generateNumber = {
     try {
       return user.generateRandomNumbers();
     } catch (error) {
+      /* istanbul ignore next */
       return h.response({ error }).code(500);
     }
   },
@@ -66,6 +67,7 @@ export const fetchNumbers = {
         meta,
       });
     } catch (error) {
+      /* istanbul ignore next */
       return h.response({ error }).code(500);
     }
   },
