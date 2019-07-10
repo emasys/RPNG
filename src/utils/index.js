@@ -1,22 +1,15 @@
 import fs from 'fs';
-/* eslint-disable import/prefer-default-export */
 
-export const readFile = srcPath => new Promise((resolve, reject) => {
+export const createFile = path => fs.closeSync(fs.openSync(path, 'a'));
+
+export const readFile = srcPath => new Promise((resolve) => {
   fs.readFile(srcPath, 'utf8', (err, data) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(data);
-    }
+    resolve(data);
   });
 });
 
-export const writeFile = (savPath, data) => new Promise((resolve, reject) => {
-  fs.appendFile(savPath, data, (err) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(data);
-    }
+export const writeFile = (savPath, data) => new Promise((resolve) => {
+  fs.appendFile(savPath, data, () => {
+    resolve(data);
   });
 });

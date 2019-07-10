@@ -1,30 +1,31 @@
-import Hapi from 'hapi';
-import dotenv from 'dotenv';
-import routes from './routes';
+import Glue from '@hapi/glue';
+import Log from 'fancy-log';
+import config from './config';
 
-// init env
-dotenv.config();
-
-// Create a server with a host and port
-const server = Hapi.server({
-  host: 'localhost',
-  port: process.env.PORT,
-});
-
-// Add routes
-routes(server);
-
-// Start the server
-const start = async () => {
-  try {
-    await server.start();
-  } catch (err) {
-    console.log(err);
-    process.exit(1);
-  }
-  console.log('Server running at:', server.info.uri);
+const options = {
+  relativeTo: __dirname,
 };
 
-start();
+const app = {};
 
-export default server;
+const startServer = async () => {
+  try {
+    const server = await Glue.compose(
+      config,
+      options,
+    );
+    app.server = server;
+    await app.server.start();
+    Log(`Server running at: ${server.info.uri}`);
+    Log(`docs running at ${server.info.uri}/documentation`);
+  } catch (error) {
+    /* istanbul ignore next */
+    Log.error(error);
+    /* istanbul ignore next */
+    process.exit(1);
+  }
+};
+
+startServer();
+
+export default app;
